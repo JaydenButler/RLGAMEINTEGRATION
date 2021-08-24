@@ -22,11 +22,11 @@ while True:
     result = json.loads(result)
     if(result["event"] == "game:goal_scored"):
         # Make vmix request on goal scored
-        # requests.get(url = "http://jaydenbutler.com:8088/api/?Function=Cut&Input=2")
+        requests.post(url = "http://127.0.0.1:8088/api/?Function=Cut&Input=2")
         print("A goal was scored!")
     elif(result["event"] == "game:round_started_go"):
         # Make vmix request on goal scored
-        # requests.get("http://jaydenbutler.com:8088/api/?Function=Cut&Input=1")
+        requests.post("http://127.0.0.1:8088/api/?Function=Cut&Input=1")
         print("Kickoff started!")
     elif (result["event"] == "game:statfeed_event"):
         print (result)
