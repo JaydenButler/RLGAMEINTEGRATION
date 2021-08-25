@@ -4,17 +4,34 @@ import requests
 from websocket import create_connection
 
 def subscribe(ws, event, data):
-    ws.send(json.dumps({
-        "event": "wsRelay:register",
-        "data": f"{event}:{data}"
-    }))
+    if(isinstance(event, str) is not True):
+        print("Event must be a string")
+        return
+    elif(isinstance(data, str) is not True):
+        print("Data must be a string")
+        return
+    else:
+        ws.send(json.dumps({
+            "event": "wsRelay:register",
+            "data": f"{event}:{data}"
+        }))
 
+ip = input("Enter IP (127.0.0.1): ")
+port = input("Enter Port (49322): ")
 
-ws = create_connection("ws://127.0.0.1:49322")
+if ip == "":
+    ip = "127.0.0.1"
+
+if port == "":
+    port = "49322"
+
+ws = create_connection(f"ws://{ip}:{port}")
 subscribe(ws, "game", "goal_scored")
 subscribe(ws, "game", "round_started_go")
 subscribe(ws, "game", "statfeed_event")
 
+if(ws is not None):
+    print("Connected to WS Relay!")
 
 
 while True:
