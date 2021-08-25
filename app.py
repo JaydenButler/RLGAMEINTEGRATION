@@ -1,7 +1,14 @@
 import json
+import signal
 import requests
 
 from websocket import create_connection
+
+#region methods
+
+def signal_handler(signal, frame):
+    global interrupted
+    interrupted = True
 
 def subscribe(ws, event, data):
     if(isinstance(event, str) is not True):
@@ -15,6 +22,8 @@ def subscribe(ws, event, data):
             "event": "wsRelay:register",
             "data": f"{event}:{data}"
         }))
+
+#endregion
 
 ip = input("Enter IP (127.0.0.1): ")
 port = input("Enter Port (49322): ")
@@ -33,6 +42,11 @@ subscribe(ws, "game", "statfeed_event")
 if(ws is not None):
     print("Connected to WS Relay!")
 
+#This is to setup up a safe infinite loop
+signal.signal(signal.SIGINT, signal_handler)
+
+interrupted = False
+
 
 while True:
     result = ws.recv()
@@ -47,3 +61,7 @@ while True:
         print("Kickoff started!")
     elif (result["event"] == "game:statfeed_event"):
         print (result)
+
+    if interrupted:
+        print("Closing app...")
+        break
